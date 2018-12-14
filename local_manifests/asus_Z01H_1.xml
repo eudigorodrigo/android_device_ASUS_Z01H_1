@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <project name="eudigorodrigo/android_device_ASUS_Z01H_1" path="device/asus/ASUS_Z01H_1" remote="github" revision="lineage-15.1" />
+  <project name="eudigorodrigo/android-kernel-ASUS_Z01H_1" path="kernel/asus/msm8953" remote="github" revision="lineage-15.1" />
+  <project name="eudigorodrigo/proprietary_vendor_ASUS_Z01H_1" path="vendor/asus/ASUS_Z01H_1" remote="github" revision="lineage-15.1" />
+  
+  <project name="LineageOS/android_packages_resources_devicesettings" path="packages/resources/devicesettings" remote="github" revision="lineage-15.1" />
+  <project name="LineageOS/android_packages_apps_FlipFlap" path="packages/apps/FlipFlap" remote="github" revision="lineage-15.1" />
+</manifest>

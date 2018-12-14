@@ -1,0 +1,367 @@
+#This is init.asus.rc for user build.
+
+import /vendor/etc/init/hw/init.asus.debugtool.rc
+import /vendor/etc/init/hw/init.asus.logtool.rc
+#import init.asus.logtool.rc
+
+on early-init
+    mkdir /ADF 0775 system system
+    mkdir /APD 0775 system system
+    mkdir /factory 0775 system system
+    mkdir /asdf 0775 system system
+
+on init
+    chown system system  /dev/goodix_fp
+    chmod 0644 /dev/goodix_fp
+
+on load_persist_props_action
+    class_start pre-core
+
+on fs
+    wait /dev/block/bootdevice/by-name/ADF
+    mount ext4 /dev/block/bootdevice/by-name/ADF /ADF rw noatime nosuid nodev barrier=1 data=ordered
+    chown system system /ADF
+    chmod 0775 /ADF
+    restorecon_recursive /ADF
+
+    setprop persist.sys.enableAPD 0
+
+    wait /dev/block/bootdevice/by-name/factory 
+    mount ext4 /dev/block/bootdevice/by-name/factory /factory ro context=u:object_r:fac_file:s0
+    chown system system /factory
+    chmod 0775 /factory
+    restorecon_recursive /factory
+
+    wait /dev/block/bootdevice/by-name/asdf
+    mount ext4 /dev/block/bootdevice/by-name/asdf /asdf rw noatime nosuid nodev barrier=1 data=ordered context=u:object_r:log_file:s0
+    chown system system /asdf
+    chmod 0775 /asdf
+
+    start check_last
+
+    write /sys/kernel/boot_adsp/boot 1
+
+    start customize_early
+
+on post-fs-data
+    insmod texfat.ko
+    chown system system /dev/cm3602
+    chmod 0660 /dev/cm3602
+    chown system system /dev/lightsensor
+    chmod 0660 /dev/lightsensor
+    chown system system /dev/asusRgbSensor
+    chmod 0660 /dev/asusRgbSensor
+    chown system system /sys/class/i2c-adapter/i2c-6/6-001c/mode
+    chmod 0774 /sys/class/i2c-adapter/i2c-6/6-001c/mode 
+    chown system system /sys/class/timed_output/vibrator/vmax
+    chmod 0666 /dev/jpeg0
+    chown system camera /dev/rk_preisp
+    chmod 0660 /dev/rk_preisp
+    chmod 0666 /asdf/ASUSEvtlog.txt
+    chmod 0666 /asdf/ASUSEvtlog_old.txt
+
+    symlink /sys/bus/mmc/devices/mmc0:0001/emmc_total_size /data/data/emmc_total_size
+    chmod 0777 /data/data/emmc_total_size
+
+    mkdir /data/dit_file 0777 camera camera
+
+    rm /data/data/VStab_1280x720_30_0.conf
+    rm /data/data/VStab_1280x720_30_1.conf
+    rm /data/data/VStab_1280x720_30_2.conf
+    rm /data/data/VStab_176x144_30_0.conf
+    rm /data/data/VStab_176x144_30_1.conf
+    rm /data/data/VStab_1920x1080_30_0.conf
+    rm /data/data/VStab_1920x1080_30_1.conf
+    rm /data/data/VStab_1920x1080_30_2.conf
+    rm /data/data/VStab_320x240_30_0.conf
+    rm /data/data/VStab_320x240_30_1.conf
+    rm /data/data/VStab_352x288_30_0.conf
+    rm /data/data/VStab_352x288_30_1.conf
+    rm /data/data/VStab_640x480_30_0.conf
+    rm /data/data/VStab_640x480_30_1.conf
+    rm /data/data/VStab_640x480_30_2.conf
+    rm /data/data/VStab_720x480_30_0.conf
+    rm /data/data/VStab_720x480_30_1.conf
+
+    symlink /system/vendor/etc/camera/Invensense/VStab_1280x720_30_0.conf /data/data/VStab_1280x720_30_0.conf
+    symlink /system/vendor/etc/camera/Invensense/VStab_1280x720_30_1.conf /data/data/VStab_1280x720_30_1.conf
+    symlink /system/vendor/etc/camera/Invensense/VStab_1280x720_30_2.conf /data/data/VStab_1280x720_30_2.conf
+    symlink /system/vendor/etc/camera/Invensense/VStab_176x144_30_0.conf /data/data/VStab_176x144_30_0.conf
+    symlink /system/vendor/etc/camera/Invensense/VStab_176x144_30_1.conf /data/data/VStab_176x144_30_1.conf
+    symlink /system/vendor/etc/camera/Invensense/VStab_1920x1080_30_0.conf /data/data/VStab_1920x1080_30_0.conf
+    symlink /system/vendor/etc/camera/Invensense/VStab_1920x1080_30_1.conf /data/data/VStab_1920x1080_30_1.conf
+    symlink /system/vendor/etc/camera/Invensense/VStab_1920x1080_30_2.conf /data/data/VStab_1920x1080_30_2.conf
+    symlink /system/vendor/etc/camera/Invensense/VStab_320x240_30_0.conf /data/data/VStab_320x240_30_0.conf
+    symlink /system/vendor/etc/camera/Invensense/VStab_320x240_30_1.conf /data/data/VStab_320x240_30_1.conf
+    symlink /system/vendor/etc/camera/Invensense/VStab_352x288_30_0.conf /data/data/VStab_352x288_30_0.conf
+    symlink /system/vendor/etc/camera/Invensense/VStab_352x288_30_1.conf /data/data/VStab_352x288_30_1.conf
+    symlink /system/vendor/etc/camera/Invensense/VStab_640x480_30_0.conf /data/data/VStab_640x480_30_0.conf
+    symlink /system/vendor/etc/camera/Invensense/VStab_640x480_30_1.conf /data/data/VStab_640x480_30_1.conf
+    symlink /system/vendor/etc/camera/Invensense/VStab_640x480_30_2.conf /data/data/VStab_640x480_30_2.conf
+    symlink /system/vendor/etc/camera/Invensense/VStab_720x480_30_0.conf /data/data/VStab_720x480_30_0.conf
+    symlink /system/vendor/etc/camera/Invensense/VStab_720x480_30_1.conf /data/data/VStab_720x480_30_1.conf
+
+    mkdir /data/misc/camera/preview_input_cam0/     0777 camera camera
+    mkdir /data/misc/camera/preview_input_cam2/     0777 camera camera
+    mkdir /data/misc/camera/preview_output_cam2/    0777 camera camera
+    mkdir /data/misc/camera/cap_input_cam0/         0777 camera camera
+    mkdir /data/misc/camera/cap_input_cam2/         0777 camera camera
+    mkdir /data/misc/camera/cap_output_cam2/        0777 camera camera 
+
+    mkdir /data/misc/dts 0771 media camera
+    chmod 775 /data/misc/dts 
+
+    mkdir /data/misc/aw 0777 audio audio
+    write /data/misc/aw/route_path.info 0
+    restorecon_recursive /data/misc/aw/route_path.info
+    chmod 777 /data/misc/aw/route_path.info
+
+    write  /data/misc/dts/playbackstatus.info 2
+    chmod 777 data/misc/dts/playbackstatus.info
+
+    mkdir /cache/charger 0777 system system
+    chmod 0777 /cache/charger/CHGLimit
+
+service dts_hpx_service /system/bin/dts_hpx_service
+    class late_start
+    user system
+    group audio media camera
+
+on property:persist.sys.enableAPD=0
+    umount /APD
+    write /proc/driver/charger_limit_enable 0
+    write /proc/driver/charging_limit 60
+
+on property:persist.sys.enableAPD=1
+    wait /dev/block/bootdevice/by-name/APD
+    mount ext4 /dev/block/bootdevice/by-name/APD /APD nosuid nodev barrier=1 data=ordered
+    chmod 0775 /APD
+    chown system system /APD
+    restorecon_recursive /APD
+    write /proc/driver/charger_limit_enable 1
+    write /proc/driver/charging_limit 60
+
+on early-boot
+    chown system system /sys/class/leds/red/pwm_us
+    chown system system /sys/class/leds/green/pwm_us
+
+on boot
+    chmod 600 /persist/bluetooth/.bt_nv.bin
+    chown bluetooth:bluetooth /persist/bluetooth/.bt_nv.bin
+    chown system system /proc/hbm_mode
+    chown system system /sys/power/dump_wakeup_sources_timer
+    chown system system /sys/bus/i2c/devices/3-0020/devattr/dclickmode
+    chown system system /sys/bus/i2c/devices/3-0020/devattr/swipemode
+    chown system system /sys/bus/i2c/devices/3-0020/devattr/gesturemode
+    chown system system /sys/bus/i2c/devices/3-0020/devattr/glovemode
+    chown system system /sys/bus/i2c/devices/3-0020/devattr/covermode
+    chown system system /sys/bus/i2c/devices/5-0038/glovemode
+
+on charger
+    wait /dev/block/bootdevice/by-name/cache
+    mount ext4 /dev/block/bootdevice/by-name/cache /cache nosuid noatime nodev barrier=1
+    mkdir /cache/charger 0777 system system
+    chmod 0777 /cache/charger/CHGLimit
+    write /cache/charger/CHGLimit 0
+    chmod 0777 /cache/charger/CHGLimit_kernel
+    write /cache/charger/CHGLimit_kernel 0
+
+on property:persist.asus.glove=0
+   write /sys/bus/i2c/devices/5-0038/glovemode 0
+
+on property:persist.asus.glove=1
+   write /sys/bus/i2c/devices/5-0038/glovemode 1
+
+on property:persist.asus.dclick=0
+    write /sys/bus/i2c/devices/3-0020/devattr/dclickmode 0
+
+on property:persist.asus.dclick=1
+    write /sys/bus/i2c/devices/3-0020/devattr/dclickmode 1
+
+on property:persist.asus.swipeup=0
+    write /sys/bus/i2c/devices/3-0020/devattr/swipemode 0
+
+on property:persist.asus.swipeup=1
+    write /sys/bus/i2c/devices/3-0020/devattr/swipemode 1
+
+on property:persist.asus.gesture.type=*
+    write /sys/bus/i2c/devices/3-0020/devattr/gesturemode ${persist.asus.gesture.type}
+
+on property:persist.asus.glove=0
+   write /sys/bus/i2c/devices/3-0020/devattr/glovemode 0
+
+on property:persist.asus.glove=1
+   write /sys/bus/i2c/devices/3-0020/devattr/glovemode 1
+
+on property:persist.asus.flipcovermode=0
+   write /sys/bus/i2c/devices/3-0020/devattr/covermode 0
+
+on property:persist.asus.flipcovermode=1
+   write /sys/bus/i2c/devices/3-0020/devattr/covermode 1
+
+service asus_audbg /vendor/bin/init.asus.audbg.sh
+    user root
+    group root
+    disabled
+    oneshot
+    seclabel u:r:audio_debug:s0
+
+on property:persist.asus.audbg=0
+    start asus_audbg
+
+on property:persist.asus.audbg=1
+    start asus_audbg
+
+service asus_checkaudbg /vendor/bin/init.asus.checkaudbg.sh
+    class late_start
+    user root
+    group root
+    #disabled
+    oneshot
+    seclabel u:r:audio_debug:s0
+
+#ASUS_BSP Add dual speaker calibration on boot+++
+service spk_calibration  /system/bin/tfamode 0
+    user root
+    oneshot
+    disabled
+
+on property:sys.boot_completed=1
+    start spk_calibration
+
+service customize_early /system/vendor/bin/customize_early
+    user root
+    oneshot
+ 
+service customize_mount /system/vendor/bin/customize_mount
+    class pre-core
+    user root
+    oneshot
+
+service customize_late /system/vendor/bin/customize_late
+    user root
+    oneshot
+
+on property:sys.boot_completed=1
+    start customize_late
+    write proc/boot_completed_prop 1
+
+service asuskeyd /system/bin/asuskeyd
+    class main
+    user root
+    group root
+    disabled
+    oneshot
+
+on property:dev.unlock=0
+    stop asuskeyd
+
+on property:dev.unlock=1
+    start asuskeyd
+
+service bugreport /system/bin/dumpstate -d -p -B -z \
+        -o /data/user_de/0/com.android.shell/files/bugreports/bugreport
+    class main
+    disabled
+    oneshot
+#   keycodes 114 115 116
+
+service VerifyVoucher  /vendor/bin/VerifyVouchers
+    class main
+    user root
+    group root
+    oneshot
+
+service gx_fpd /vendor/bin/gx_fpd
+   class late_start
+   user system
+   group system
+
+service hades_fp /system/vendor/bin/hades_fp
+   class late_start
+   user system
+   group system
+   oneshot
+
+service teeserver /vendor/bin/teeserver
+    class late_start
+    user system
+    group system
+    oneshot
+
+
+service onFgAppChanged /vendor/bin/onFgAppChanged
+    class core
+    user root
+    oneshot
+    disabled
+
+on property:dev.bootcomplete=1 && property:sys.foregroundapp=*
+    start onFgAppChanged
+
+service ssr_modem_setup /vendor/bin/ssr_setup modem
+    oneshot
+    disabled
+
+on property:persist.sys.ssr.modem=1
+    start ssr_modem_setup
+
+on property:persist.sys.ssr.modem=0
+    start ssr_setup
+
+on property:sys.asus.cndemo=1
+    write /proc/driver/charger_limit_enable 1
+    write /proc/driver/charging_limit 60
+
+on property:persist.radio.device.imei=*
+    setprop ro.deviceid ${persist.radio.device.imei}
+
+on post-fs
+    # Update dm-verity state and set partition.*.verified properties
+    verity_update_state
+
+service modem_country /system/vendor/bin/modem_country
+    class late_start
+    user bluetooth
+    group net_bt
+    disabled
+    oneshot
+
+on property:sys.boot_completed=1
+    start modem_country
+
+service audio_voice /system/vendor/bin/audio_voice
+    class late_start
+    user system
+    group system
+    disabled
+    oneshot
+
+on property:use.audio.voice.mode=*
+    start audio_voice
+
+service hostapd_cmd /system/vendor/bin/hostapd_cmd
+    class main
+    group system wifi
+    user root
+    oneshot
+    disabled
+
+on property:persist.sys.wifi.hostapd.cmd=*
+    start hostapd_cmd
+
+on property:persist.asus.wifiDriverDebug=1
+    write /sys/module/wcnsscore/parameters/do_wifi_driver_debug 1
+on property:persist.asus.wifiDriverDebug=0
+    write /sys/module/wcnsscore/parameters/do_wifi_driver_debug 0
+
+on property:persist.sys.ultrabatterylife=1
+    # ultra battery life mode disable
+    write /cache/charger/CHGLimit 0
+    write /cache/charger/CHGLimit_kernel 1
+    write /proc/driver/charging_limit 60
+
+on property:persist.sys.ultrabatterylife=0
+    # ultra battery life mode disable
+    write /cache/charger/CHGLimit_kernel 0
+    write /proc/driver/charging_limit 0
